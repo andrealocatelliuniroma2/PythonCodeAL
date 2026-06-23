@@ -1,0 +1,16 @@
+{
+    "numMotor": 6,
+    "weightFrame_g": 600,
+    "weightBattery_g": 1100, 
+    "weightMotor_g": 68,
+    "weightExtra_g": 100,
+    "weightPayload_g": 1000,
+    "weightProp_g": 25,
+    "battery_mAh": 12000,
+    "batteryV_S": 4,
+    "batteryType": "LiPo",
+    "motorType": "A2216",
+    "motorKV": "KV880",
+    "propType": "1038",
+    "datasheetFile": "A2216_KV880_datasheet.csv"
+}
