@@ -1,3 +1,6 @@
+# Author: Andrea Locatelli <andrea.locatelli.1997@gmail.com>
+# Copyright (c) 2026 Andrea Locatelli
+
 # datasheetLoader.py
 # Reads a T-Motor datasheet (HTML saved as .xls) using ONLY the
 # Python standard library: no packages to install.

@@ -1,3 +1,6 @@
+# Author: Andrea Locatelli <andrea.locatelli.1997@gmail.com>
+# Copyright (c) 2026 Andrea Locatelli
+
 # displayDatasheet.py
 def displayDatasheet(blocks):
     """Prints each datasheet block as a readable table."""

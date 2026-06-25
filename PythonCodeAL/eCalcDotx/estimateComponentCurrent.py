@@ -1,3 +1,6 @@
+# Author: Andrea Locatelli <andrea.locatelli.1997@gmail.com>
+# Copyright (c) 2026 Andrea Locatelli
+
 def estimate_avionics_current(pack_voltage_V,
                               num_esc,
                               autopilot_power_W=2.5,

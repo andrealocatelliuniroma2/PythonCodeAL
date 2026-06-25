@@ -1,3 +1,7 @@
+# Author: Andrea Locatelli <andrea.locatelli.1997@gmail.com>
+# Copyright (c) 2026 Andrea Locatelli
+
+
 # datasheetLoader.py
 # Reads a motor datasheet from the canonical CSV format (long-format), using
 # ONLY the standard library. One row = one measurement point; rows with

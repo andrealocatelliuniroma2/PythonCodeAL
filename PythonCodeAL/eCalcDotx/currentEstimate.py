@@ -1,5 +1,8 @@
+# Author: Andrea Locatelli <andrea.locatelli.1997@gmail.com>
+# Copyright (c) 2026 Andrea Locatelli
+
 # currentEstimate.py
-# Interpolazione lineare con la sola libreria standard (niente numpy).
+
 from bisect import bisect_left
 
 def estimateCurrent(thrust_query, thrust_data, current_data,
