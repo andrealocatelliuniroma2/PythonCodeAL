@@ -5,19 +5,21 @@ from bisect import bisect_left
 def estimateCurrent(thrust_query, thrust_data, current_data,
                     allow_extrapolation=False):
     """
-    Stima la corrente (A) a una data spinta (g) per interpolazione lineare.
-    thrust_query : spinta richiesta per singolo motore [g]
-    thrust_data  : vettore delle spinte dal datasheet (le x)
-    current_data : vettore delle correnti dal datasheet (le y)
+    Estimates the current (A) at a given thrust (g) via linear interpolation.
+
+    Parameters:
+    thrust_query : Required thrust per single motor [g]
+    thrust_data  : Array of thrust values from datasheet (the x-axis)
+    current_data : Array of current values from datasheet (the y-axis)
     """
-    punti = sorted(zip(thrust_data, current_data))
-    xs = [p[0] for p in punti]
-    ys = [p[1] for p in punti]
+    points = sorted(zip(thrust_data, current_data))
+    xs = [p[0] for p in points]
+    ys = [p[1] for p in points]
 
     if not allow_extrapolation and (thrust_query < xs[0] or thrust_query > xs[-1]):
         raise ValueError(
-            f"spinta {thrust_query} g fuori dal range datasheet "
-            f"[{xs[0]}, {xs[-1]}] g: estrapolazione non consentita")
+            f"Thrust {thrust_query} g out of datasheet range "
+            f"[{xs[0]}, {xs[-1]}] g: error interpolation")
 
     if thrust_query <= xs[0]:
         return ys[0]

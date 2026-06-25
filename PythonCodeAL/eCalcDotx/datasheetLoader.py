@@ -1,6 +1,6 @@
 # datasheetLoader.py
-# Legge un datasheet T-Motor (HTML salvato come .xls) usando SOLO la
-# libreria standard di Python: nessun pacchetto da installare.
+# Reads a T-Motor datasheet (HTML saved as .xls) using ONLY the
+# Python standard library: no packages to install.
 import re
 from html.parser import HTMLParser
 
@@ -35,8 +35,8 @@ class _TableParser(HTMLParser):
 
     def handle_endtag(self, tag):
         if tag == "td" and self._cell is not None:
-            testo = " ".join("".join(self._cell).split())
-            self._row.append((testo, self._rowspan))
+            text = " ".join("".join(self._cell).split())
+            self._row.append((text, self._rowspan))
             self._cell = None
         elif tag == "tr" and self._row is not None:
             self.rows.append(self._row)
@@ -59,12 +59,12 @@ def _fill_rowspans(raw_rows):
                 col += 1
                 continue
             try:
-                testo, rowspan = next(it)
+                text, rowspan = next(it)
             except StopIteration:
                 break
-            row.append(testo)
+            row.append(text)
             if rowspan > 1:
-                carry[col] = [testo, rowspan - 1]
+                carry[col] = [text, rowspan - 1]
             col += 1
         grid.append(row)
     return grid
@@ -80,8 +80,8 @@ def _to_float(value):
 
 def load_datasheet(path):
     """
-    Legge il datasheet e restituisce una LISTA di blocchi.
-    Ogni blocco e' una condizione di prova (kv, tensione, elica) con i suoi vettori:
+    Reads the datasheet and returns a LIST of blocks.
+    Each block is a test condition (kv, voltage, propeller) with its vectors:
       {"kv": "KV780", "voltage_V": 14.8, "prop": "T-MOTOR 9545B",
        "throttle_pct": [...], "current_A": [...], "thrust_g": [...], ...}
     """
@@ -90,9 +90,9 @@ def load_datasheet(path):
         parser.feed(f.read())
 
     grid = _fill_rowspans(parser.rows)
-    idx = {nome: i for i, nome in enumerate(grid[0])}
+    idx = {name: i for i, name in enumerate(grid[0])}
 
-    blocchi = {}   # (kv, tensione, prop) -> blocco
+    blocks = {}   # (kv, voltage, prop) -> block
     for row in grid[1:]:
         if not row or row[0].startswith("Notes:"):
             continue
@@ -100,44 +100,44 @@ def load_datasheet(path):
         if not match:
             continue
         kv = match.group(0)
-        tensione = _to_float(row[idx["Voltage (V)"]]) if "Voltage (V)" in idx else None
+        voltage = _to_float(row[idx["Voltage (V)"]]) if "Voltage (V)" in idx else None
         prop = row[idx["Prop"]] if "Prop" in idx else None
 
-        chiave = (kv, tensione, prop)
-        if chiave not in blocchi:
-            blocco = {"kv": kv, "voltage_V": tensione, "prop": prop}
+        key = (kv, voltage, prop)
+        if key not in blocks:
+            block = {"kv": kv, "voltage_V": voltage, "prop": prop}
             for c in _COLUMN_MAP.values():
-                blocco[c] = []
-            blocchi[chiave] = blocco
+                block[c] = []
+            blocks[key] = block
 
-        blocco = blocchi[chiave]
+        block = blocks[key]
         for col_datasheet, c in _COLUMN_MAP.items():
             if col_datasheet in idx:
-                blocco[c].append(_to_float(row[idx[col_datasheet]]))
+                block[c].append(_to_float(row[idx[col_datasheet]]))
 
-    return list(blocchi.values())
+    return list(blocks.values())
 
 
-def selectBlock(blocchi, kv=None, voltage=None, prop=None):
+def selectBlock(blocks, kv=None, voltage=None, prop=None):
     """
-    Restituisce l'UNICO blocco che corrisponde ai criteri dati.
-    I criteri None vengono ignorati. Errore se nessuno o piu' di uno corrisponde.
+    Returns the SINGLE block matching the given criteria.
+    None criteria are ignored. Raises an error if none or more than one matches.
     """
-    risultati = []
-    for b in blocchi:
+    results = []
+    for b in blocks:
         if kv is not None and b["kv"] != kv:
             continue
         if voltage is not None and b["voltage_V"] != voltage:
             continue
         if prop is not None and b["prop"] != prop:
             continue
-        risultati.append(b)
+        results.append(b)
 
-    if len(risultati) == 0:
+    if len(results) == 0:
         raise ValueError(
-            f"Nessun blocco per kv={kv}, voltage={voltage}, prop={prop}")
-    if len(risultati) > 1:
-        descr = [(b["kv"], b["voltage_V"], b["prop"]) for b in risultati]
+            f"No block found for kv={kv}, voltage={voltage}, prop={prop}")
+    if len(results) > 1:
+        descr = [(b["kv"], b["voltage_V"], b["prop"]) for b in results]
         raise ValueError(
-            f"Piu' blocchi corrispondono, criteri ambigui: {descr}")
-    return risultati[0]
+            f"Multiple blocks match, ambiguous criteria: {descr}")
+    return results[0]

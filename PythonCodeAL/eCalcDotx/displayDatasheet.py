@@ -1,7 +1,7 @@
 # displayDatasheet.py
-def displayDatasheet(blocchi):
-    """Stampa ogni blocco del datasheet come tabella leggibile."""
-    colonne = [
+def displayDatasheet(blocks):
+    """Prints each datasheet block as a readable table."""
+    columns = [
         ("throttle_pct",  "Throttle(%)"),
         ("current_A",     "Current(A)"),
         ("power_W",       "Power(W)"),
@@ -9,13 +9,13 @@ def displayDatasheet(blocchi):
         ("rpm",           "RPM"),
         ("efficiency_gW", "Eff(g/W)"),
     ]
-    larghezza = 12
+    width = 12
 
-    for b in blocchi:
+    for b in blocks:
         print(f"\n=== {b['kv']} @ {b['voltage_V']} V — Prop: {b['prop']} ===")
-        intestazione = "".join(f"{nome:>{larghezza}}" for _, nome in colonne)
-        print(intestazione)
-        print("-" * len(intestazione))
+        header = "".join(f"{name:>{width}}" for _, name in columns)
+        print(header)
+        print("-" * len(header))
         for i in range(len(b["throttle_pct"])):
-            riga = "".join(f"{b[chiave][i]:>{larghezza}}" for chiave, _ in colonne)
-            print(riga)
+            row = "".join(f"{b[key][i]:>{width}}" for key, _ in columns)
+            print(row)
