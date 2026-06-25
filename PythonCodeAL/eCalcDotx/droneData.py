@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class DroneInfo:
+    frameType: str
     numMotor: int
     weightFrame_g: float
     weightBattery_g: float

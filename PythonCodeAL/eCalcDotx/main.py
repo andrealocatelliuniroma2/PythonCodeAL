@@ -15,6 +15,7 @@ from displayDatasheet import displayDatasheet
 from autonomyEstimate import autonomyTime
 from batteryVoltageConvertion import batteryVoltage
 from batteryWeightEstimate import batteryWeight
+from estimateComponentCurrent import estimate_avionics_current
 
 def main():
     
@@ -63,9 +64,13 @@ def main():
     estimateI_A = estimateCurrent(thrustSingleMotor_g, tabDatasheet["thrust_g"], tabDatasheet["current_A"])
     print(f"Estimated Current per Motor: {estimateI_A:.2f} A")
 
+    # Avionics current (Pixhawk + ESC idle), referred to pack voltage
+    I_avionics_A = estimate_avionics_current(motorVoltage, info.numMotor)
+    print(f"Estimated Components Current: {I_avionics_A:.2f} A")
+
     # Estimated flight time
-    autonomyTimeEstimate = autonomyTime(estimateI_A,info.battery_mAh,info.numMotor)
-    print(f"Estimated flight time: {autonomyTimeEstimate:.2f} min")
+    autonomyTimeEstimate = autonomyTime(estimateI_A,I_avionics_A,info.battery_mAh,info.numMotor)
+    print(f"Estimated hovering time: {autonomyTimeEstimate:.2f} min")
 
 if __name__ == "__main__":
     main()
